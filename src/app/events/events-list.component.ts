@@ -1,48 +1,39 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "../common/toastr.service";
+import { IEvent } from "./shared";
+import { EventsService } from "./shared/event.service";
 
 @Component({
-    selector: 'events-list',
+    selector: '',
     template:`
     <div>
     <h1> Upcoming Angular Events</h1>
     <hr />
-    <event-thumbnail (eventClick)="handleEventClicked($event)" [event]="event1" ></event-thumbnail>
-    <event-thumbnail (eventClick)="handleEventClicked($event)" [event]="event2" ></event-thumbnail>
+    <div class="row">
+        <div class="col-md-5 " *ngFor="let event of events">
+            <event-thumbnail (click)="handleThumbnailClick(event.name)" [event]="event" ></event-thumbnail>
+        </div>
+        </div>
     </div>`
     
 })
 
-export class EventListComponent{
-    event1 = {
-        id: 1,
-        name: 'Angular Connect',
-        date: '9/24/2036',
-        time: '10:00 am',
-        price: 390.90,
-        imageUrl: '/assets/images/angularconnect-shield.png',
-        location: {
-            address: '1057 DT',
-            city: 'London',
-            country:'England'
-        }
-    }
+export class EventListComponent implements OnInit{
 
-        event2 = {
-        id: 1,
-        name: 'Angular Connec tghertyhjerytghertht',
-        date: '9/24/2036',
-        time: '10:00 am',
-        price: 390.90,
-        imageUrl: '/assets/images/angularconnect-shield.png',
-        location: {
-            address: '1057 DT',
-            city: 'London',
-            country:'England'
-        }
-    }
+  events: IEvent[];
 
-    handleEventClicked(data) {
-        console.log('received', data)
-    }
+  constructor(private eventsService: EventsService, private toastrService: ToastrService, private route: ActivatedRoute) {
+    
+  }
+
+  ngOnInit() {
+    this.events = this.route.snapshot.data['events']
+   
+  }
+
+  handleThumbnailClick(eventName) {
+    this.toastrService.success(eventName)
+  }
 
 }
